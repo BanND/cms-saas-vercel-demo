@@ -25,6 +25,13 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: '*.idio.co',
                 pathname: '/**'
+            },
+            // Localhost CMS for development
+            {
+                protocol: 'https',
+                hostname: 'localhost',
+                port: '5000',
+                pathname: '/**'
             }
         ]
     },
