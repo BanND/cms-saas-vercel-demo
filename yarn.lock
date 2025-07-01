@@ -2570,7 +2570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@optimizely/optimizely-sdk@npm:^5.3.5":
+"@optimizely/optimizely-sdk@npm:^5.3.4, @optimizely/optimizely-sdk@npm:^5.3.5":
   version: 5.3.5
   resolution: "@optimizely/optimizely-sdk@npm:5.3.5"
   dependencies:
@@ -2595,6 +2595,18 @@ __metadata:
     react-native-get-random-values:
       optional: true
   checksum: 10c0/1b799004efe6454347126bae2ffd28bea83eb0a22ab0b138fc53c52d2e37c897a6ad07527bf5437b21c07b2f6c05aff75b88d54cff214d67dc830dab99f43190
+  languageName: node
+  linkType: hard
+
+"@optimizely/react-sdk@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "@optimizely/react-sdk@npm:3.2.4"
+  dependencies:
+    "@optimizely/optimizely-sdk": "npm:^5.3.4"
+    hoist-non-react-statics: "npm:^3.3.2"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 10c0/864762562ce1198f10840f45d91425ed9a26704cad43b8b054e11188cd6ed155c64d186788606f7e60311f6ddf7af8c6611da85c558a99342950f9f9254eb724
   languageName: node
   linkType: hard
 
@@ -6696,6 +6708,7 @@ __metadata:
     "@heroicons/react": "npm:^2.2.0"
     "@next/env": "npm:^14.2.28"
     "@optimizely/optimizely-sdk": "npm:^5.3.5"
+    "@optimizely/react-sdk": "npm:^3.2.4"
     "@parcel/watcher": "npm:^2.5.1"
     "@react-hook/window-size": "npm:^3.1.1"
     "@remkoj/optimizely-cms-api": "npm:^5.0.2"
@@ -7280,7 +7293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.3.1":
+"hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
