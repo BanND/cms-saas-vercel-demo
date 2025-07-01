@@ -12,7 +12,7 @@ import FlagsOffMessage from "@components/fx-test/flags-off-message";
 import { Pre } from "@components/fx-test/pre";
 
 const optimizelyClient: ReactSDKClient = createInstance({
-  sdkKey: "HZ88m4YEBFMS8H36KdKNV",
+  sdkKey: "Lvk37LhwJzyoUE8YTL7zr",
 });
 
 const userIds: string[] = [];
@@ -25,7 +25,7 @@ function Page() {
   const [hasOnFlag, setHasOnFlag] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [isClientReady, setIsClientReady] = useState<Boolean>(false);
-  const [projectId, setProjectId] = useState<string>();
+  //const [projectId, setProjectId] = useState<string>();
 
   useEffect(() => {
     optimizelyClient.onReady().then(() => {
@@ -33,7 +33,7 @@ function Page() {
       setIsDone(true);
       if (isClientValid()) {
         setIsClientReady(true);
-        setProjectID(optimizelyClient.getOptimizelyConfig());
+       // setProjectID(optimizelyClient.getOptimizelyConfig());
       }
     }).catch((err) => {
       console.error("Error initializing Optimizely Client:", err);
@@ -44,14 +44,21 @@ function Page() {
   const isClientValid = (): boolean => {
     const optimizelyConfig = optimizelyClient.getOptimizelyConfig();
     console.log("Optimizely Config:", optimizelyConfig);
-    return optimizelyConfig !== null;
+    return optimizelyConfig !== null && optimizelyConfig !== undefined;
   };
 
-  const setProjectID = (optimizelyConfig: OptimizelyConfig | null): void => {
-    if (!optimizelyConfig) return;
-    const datafile = JSON.parse(optimizelyConfig.getDatafile());
-    setProjectId(datafile.projectId);
-  };
+  let projectId = '{project_id}';
+  if (isClientValid()) {
+    const optimizelyConfig = optimizelyClient.getOptimizelyConfig();
+    if (optimizelyConfig && typeof optimizelyConfig.getDatafile === "function") {
+      try {
+        const datafile = JSON.parse(optimizelyConfig.getDatafile());
+        projectId = datafile.projectId || '{project_id}';
+      } catch (error) {
+        console.error("Error parsing datafile:", error);
+      }
+    }
+  }
 
   return (
     <OptimizelyProvider

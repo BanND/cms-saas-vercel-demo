@@ -2,7 +2,7 @@
 import "server-only"
 import { get } from '@vercel/edge-config'
 import { headers } from 'next/headers'
-import { createInstance, type OptimizelyUserContext, type UserAttributes, type OptimizelyDecision } from '@optimizely/optimizely-sdk/lite'
+import { createInstance, type OptimizelyUserContext, type UserAttributes, type OptimizelyDecision } from '@optimizely/optimizely-sdk'
 import { cache } from 'react'
 
 export type OptimizelyFlag<T extends { [variableKey: string]: unknown }> = {
@@ -27,14 +27,20 @@ export const getInstance = cache(async () => {
     if (!datafile)
         throw new Error("Unable to load datafile, check your sdkKey")
     const fx = createInstance({
-        datafile
+        datafile: datafile
     })
     if (!fx)
         throw new Error("Optimizely Feature Experimentation not created")
 
-    const { success, reason } = await fx.onReady()
-    if (!success)
-        throw new Error("Optimizely Feature Experimentation initialization failed: " + (reason ?? ""))
+    try {
+        const readyResult = await fx.onReady() as any
+        const success = readyResult?.success
+        const reason = readyResult?.reason
+        if (!success)
+            throw new Error("Optimizely Feature Experimentation initialization failed: " + (reason ?? ""))
+    } catch (error) {
+        throw new Error("Optimizely Feature Experimentation initialization failed: " + error)
+    }
     return fx
 })
 
