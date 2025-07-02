@@ -12,7 +12,7 @@ import FlagsOffMessage from "@components/fx-test/flags-off-message";
 import { Pre } from "@components/fx-test/pre";
 
 const optimizelyClient: ReactSDKClient = createInstance({
-  sdkKey: "Lvk37LhwJzyoUE8YTL7zr",
+  sdkKey: "WiCEtqymaemJWTqzgGZdu", // cms_integration_test
 });
 
 const userIds: string[] = [];
