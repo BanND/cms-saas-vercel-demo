@@ -4,10 +4,11 @@ import Pre from "./pre";
 interface DecisionType {
   userId: string;
   setHasOnFlag: Function;
+  contents: any[];
 }
 
 export const Decision: React.FC<DecisionType> = (props: DecisionType) => {
-  const { userId, setHasOnFlag } = props;
+  const { userId, setHasOnFlag, contents } = props;
 
   // Generally React SDK runs for one client at a time i.e for one user throughout the lifecycle.
   // You can provide the user Id once while wrapping the app in the Provider component and the SDK will memoize and reuse it throughout the application lifecycle.
@@ -38,13 +39,43 @@ export const Decision: React.FC<DecisionType> = (props: DecisionType) => {
   // get a dynamic configuration variable
   // "sort_method" corresponds to a variable key in your Optimizely project
   const sortMethod = decision.variables["cms-integration-test-method"];
+  const cmsVariationName =
+    decision.variables["cms-integration-test-variation-name"] || null;
+  const content = contents.find(
+    (content) => content._metadata.variation == cmsVariationName,
+  );
 
   return (
-    <Pre>
-      {`\nFlag ${
-        decision.enabled ? "on" : "off"
-      }. User number ${userId} saw flag variation: ${variationKey} and got event cms-integration_test_event
+    <>
+      <Pre>
+        {`\nFlag ${
+          decision.enabled ? "on" : "off"
+        }. User number ${userId} saw flag variation: ${variationKey} and got event cms-integration_test_event
  : ${sortMethod} config variable as part of flag rule: ${decision.ruleKey}`}
-    </Pre>
+      </Pre>
+
+      {!!content && (
+        <div>
+          <p>---------------------------------</p>
+          <p>
+            Name: {content._metadata.displayName} <br />
+            Variation: {content._metadata.variation || "Original"} <br />
+          </p>
+          <p>
+            SEO Settings:{" "}
+            {content.BlankExperienceSeoSettings?.MetaTitle || "No Title"} <br />
+          </p>
+          <p>
+            Heading Text:{" "}
+            {
+              content.composition.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0]
+                ?.component?.headingText
+            }{" "}
+            <br />
+          </p>
+          <p>---------------------------------</p>
+        </div>
+      )}
+    </>
   );
 };

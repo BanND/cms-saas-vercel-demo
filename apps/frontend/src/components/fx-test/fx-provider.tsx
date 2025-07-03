@@ -46,7 +46,12 @@ const donePromise = new Promise<void>(resolve => {
   }, 500);
 });
 
-function Page() {
+interface FxProviderType {
+  contents: any[];
+}
+
+export const FxProvider: React.FC<FxProviderType> = (props: FxProviderType) => {
+  console.log("FxProvider props:", props);
   const [hasOnFlag, setHasOnFlag] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [isClientReady, setIsClientReady] = useState<Boolean>(false);
@@ -101,7 +106,7 @@ function Page() {
               key={userId}
               userId={userId}
               setHasOnFlag={setHasOnFlag}
-              contents={[] /* props.contents */} // Replace with actual contents if needed
+              contents={props.contents}
             />
           ))}
           <br />
@@ -118,4 +123,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default FxProvider;

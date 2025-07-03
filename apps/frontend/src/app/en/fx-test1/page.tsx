@@ -3,6 +3,7 @@ import { getSdk } from "@/gql/client";
 import { gql, type GraphQLClient } from "graphql-request";
 import type * as Types from "@gql/graphql";
 import { Locales } from "@gql/graphql";
+import FxProvider from "@/components/fx-test/fx-provider";
 
 function getContentByPath(
   client: GraphQLClient,
@@ -559,7 +560,7 @@ const Page = async () => {
   return (
     <div>
       <h1>Optimizely Feature Experimentation Test Page</h1>
-      <p>These are all {contents.length} variations of this content path:</p>
+      {/* <p>These are all {contents.length} variations of this content which being fetched from server side:</p>
       <ul>
         {contents.map((content) => (
           <li key={content._metadata.key}>
@@ -579,7 +580,8 @@ const Page = async () => {
             <p>---------------------------------</p>
           </li>
         ))}
-      </ul>
+      </ul> */}
+      <FxProvider contents={contents} />
     </div>
   );
 };
