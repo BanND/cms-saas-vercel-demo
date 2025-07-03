@@ -14,9 +14,9 @@ export const Decision: React.FC<DecisionType> = (props: DecisionType) => {
   // For this example, we are simulating 10 different users so we will ignore this and pass override User IDs to the useDecision hook for demonstration purpose.
   // This override will not be needed for normal react sdk use cases.
   const [decision, clientReady] = useDecision(
-    "product_sort",
+    "cms_integration_test",
     {},
-    { overrideUserId: userId }
+    { overrideUserId: userId },
   );
 
   // Don't render the component if SDK client is not ready yet.
@@ -37,15 +37,14 @@ export const Decision: React.FC<DecisionType> = (props: DecisionType) => {
 
   // get a dynamic configuration variable
   // "sort_method" corresponds to a variable key in your Optimizely project
-  const sortMethod = decision.variables["sort_method"];
+  const sortMethod = decision.variables["cms-integration-test-method"];
 
   return (
     <Pre>
       {`\nFlag ${
         decision.enabled ? "on" : "off"
-      }. User number ${userId} saw flag variation: ${variationKey} and got products sorted by: ${sortMethod} config variable as part of flag rule: ${
-        decision.ruleKey
-      }`}
+      }. User number ${userId} saw flag variation: ${variationKey} and got event cms-integration_test_event
+ : ${sortMethod} config variable as part of flag rule: ${decision.ruleKey}`}
     </Pre>
   );
 };

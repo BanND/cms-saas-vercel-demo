@@ -1,6 +1,4 @@
 "use client";
-
-import { OptimizelyConfig } from "@optimizely/optimizely-sdk";
 import {
   OptimizelyProvider,
   ReactSDKClient,
@@ -16,10 +14,37 @@ const optimizelyClient: ReactSDKClient = createInstance({
 });
 
 const userIds: string[] = [];
-while (userIds.length < 10) {
+while (userIds.length < 4) {
   // to get rapid demo results, generate an array of random users. Each user always sees the same variation unless you reconfigure the flag rule.
   userIds.push((Math.floor(Math.random() * 999999) + 100000).toString());
 }
+
+function isClientValid() {
+  const optimizelyConfig = optimizelyClient.getOptimizelyConfig();
+  console.log("Optimizely Config:", optimizelyConfig);
+  return optimizelyConfig !== null && optimizelyConfig !== undefined;
+}
+
+let userMessages = userIds.reduce((result, userId) => ({ ...result, [userId]: [] }), {});
+
+const donePromise = new Promise<void>(resolve => {
+  setTimeout(() => {
+    optimizelyClient.onReady().then(() => {
+      if (isClientValid()) {
+        userIds.forEach(userId => {
+          const question = `Tracking ${userId} with event cms-integration_test_event?`;
+          const trackEvent = window.confirm(question);
+          optimizelyClient.track('cms-integration_test_event', userId);
+          const message = trackEvent
+            ? 'Optimizely recorded a event cms-integration_test_event for user ' + userId
+            : "Optimizely didn't record a event cms-integration_test_event for user " + userId;
+          userMessages[userId].push(`${question} ${trackEvent ? 'Y' : 'N'}`, message);
+        });
+      }
+      resolve();
+    });
+  }, 500);
+});
 
 function Page() {
   const [hasOnFlag, setHasOnFlag] = useState(false);
@@ -40,12 +65,11 @@ function Page() {
       // Handle error
   });
   }, []);
-
-  const isClientValid = (): boolean => {
-    const optimizelyConfig = optimizelyClient.getOptimizelyConfig();
-    console.log("Optimizely Config:", optimizelyConfig);
-    return optimizelyConfig !== null && optimizelyConfig !== undefined;
-  };
+  donePromise.then(() => setIsDone(true));
+  optimizelyClient.onReady().then(() => {
+    isClientValid() && setIsClientReady(true);
+    console.log("Optimizely Client is ready");
+  });
 
   let projectId = '{project_id}';
   if (isClientValid()) {
@@ -54,6 +78,7 @@ function Page() {
       try {
         const datafile = JSON.parse(optimizelyConfig.getDatafile());
         projectId = datafile.projectId || '{project_id}';
+        console.log("Optimizely Datafile Project ID:", projectId);
       } catch (error) {
         console.error("Error parsing datafile:", error);
       }
