@@ -38,9 +38,11 @@ export const Decision: React.FC<DecisionType> = (props: DecisionType) => {
 
   // get a dynamic configuration variable
   // "sort_method" corresponds to a variable key in your Optimizely project
-  const sortMethod = decision.variables["cms-integration-test-method"];
   const cmsVariationName =
     decision.variables["cms-integration-test-variation-name"] || null;
+    console.log(
+      `cms-integration-test-variation-name: ${cmsVariationName}`
+    );
   const content = contents.find(
     (content) => content._metadata.variation == cmsVariationName,
   );
@@ -51,7 +53,7 @@ export const Decision: React.FC<DecisionType> = (props: DecisionType) => {
         {`\nFlag ${
           decision.enabled ? "on" : "off"
         }. User number ${userId} saw flag variation: ${variationKey} and got event cms-integration_test_event
- : ${sortMethod} config variable as part of flag rule: ${decision.ruleKey}`}
+ : ${cmsVariationName} config variable as part of flag rule: ${decision.ruleKey}`}
       </Pre>
 
       {!!content && (

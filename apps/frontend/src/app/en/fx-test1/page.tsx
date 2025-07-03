@@ -20,7 +20,7 @@ function getContentByPath(
         where: {
           _metadata: { url: { default: { in: $path }, base: { eq: $siteId } } }
         }
-        # variation: { include: SOME, value: "var1" }
+        # variation: { include: SOME, value: "MoseyVariant1" }
         variation: { include: ALL }
         locale: $locale
       ) {
@@ -548,7 +548,7 @@ const Page = async () => {
   });
   const sdk = getSdk(graphClient);
   const result = await getContentByPath(graphClient, {
-    path: "/en/fx-test/",
+    path: "/en/",
     locale: Locales.en,
   });
   const contents = (result.content?.items as Array<any>) ?? [];
