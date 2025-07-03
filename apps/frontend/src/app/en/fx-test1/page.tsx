@@ -1,4 +1,3 @@
-
 import { createClient } from "@remkoj/optimizely-graph-client";
 import { getSdk } from "@/gql/client";
 import { gql, type GraphQLClient } from "graphql-request";
@@ -20,12 +19,12 @@ function getContentByPath(
         where: {
           _metadata: { url: { default: { in: $path }, base: { eq: $siteId } } }
         }
-        variation: { include: SOME, value: "var1" }
-        # variation: { include: ALL }
+        # variation: { include: SOME, value: "var1" }
+        variation: { include: ALL }
         locale: $locale
       ) {
         total
-        items: item {
+        items {
           ...IContentData
           ...PageData
           ...BlankExperienceData
@@ -525,6 +524,7 @@ function getContentByPath(
       locale
       types
       displayName
+      variation
       version
       url {
         ...LinkData
@@ -540,25 +540,46 @@ function getContentByPath(
 }
 
 const Page = async () => {
-   const graphClient = createClient(undefined, undefined, {
-          nextJsFetchDirectives: true,
-          cache: true,
-          queryCache: true,
-      })
+  const graphClient = createClient(undefined, undefined, {
+    nextJsFetchDirectives: true,
+    cache: true,
+    queryCache: true,
+  });
   const sdk = getSdk(graphClient);
   const result = await getContentByPath(graphClient, {
     path: "/en/fx-test/",
     locale: Locales.en,
   });
-  console.log(">>> Optimizely Client Initialized:", JSON.stringify(result.content, null, 2));
+  const contents = (result.content?.items as Array<any>) ?? [];
+  console.log(
+    ">>> Optimizely Client Initialized:",
+    JSON.stringify(contents, null, 2),
+  );
 
   return (
     <div>
       <h1>Optimizely Feature Experimentation Test Page</h1>
-      <p>This page is used to test Optimizely feature flags and experiments.</p>
-      <p>
-        Check the console for logs related to Optimizely client initialization.
-      </p>
+      <p>These are all {contents.length} variations of this content path:</p>
+      <ul>
+        {contents.map((content) => (
+          <li key={content._metadata.key}>
+            <p>---------------------------------</p>
+            <p>
+              Name: {content._metadata.displayName} <br />
+              Variation: {content._metadata.variation || "Original"} <br />
+            </p>
+            <p>
+              SEO Settings:{" "}
+              {content.BlankExperienceSeoSettings?.MetaTitle || "No Title"} <br />
+            </p>
+            <p>
+              Heading Text:{" "}
+              {content.composition.nodes[0]?.nodes[0]?.nodes[0]?.nodes[0]?.component?.headingText} <br />
+            </p>
+            <p>---------------------------------</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
